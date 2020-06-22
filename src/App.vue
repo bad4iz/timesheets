@@ -1,41 +1,19 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-content>
+    <div>
       <HelloWorld />
-    </v-content>
+    </div>
+    <div class="nonema">value: {{ model }}</div>
+    <input type="text" v-model="name" />
+    <v-btn @click="add" depressed small>add</v-btn>
+
+    <ul>
+      <li v-for="todo in todos" :key="todo">
+        <p>{{ todo }}</p>
+        <input type="text" v-model="tmp" />
+        <v-btn @click="change(todo)" depressed small>change</v-btn>
+      </li>
+    </ul>
   </v-app>
 </template>
 
@@ -44,13 +22,33 @@ import HelloWorld from "./components/HelloWorld";
 
 export default {
   name: "App",
-
   components: {
     HelloWorld
   },
-
   data: () => ({
-    //
-  })
+    name: "1",
+    tmp: "",
+    todos: []
+  }),
+  methods: {
+    add() {
+      const { name, todos } = this;
+      todos.push(name);
+      this.name = "";
+    },
+    change(val) {
+      const { todos, tmp } = this;
+      const newTodos = todos.filter(item => item !== val);
+      newTodos.push(tmp);
+      this.todos = newTodos;
+      this.tmp = "";
+    }
+  }
 };
 </script>
+
+<style scoped>
+.nonema {
+  border: 1px solid red;
+}
+</style>
