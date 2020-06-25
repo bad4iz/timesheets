@@ -1,54 +1,54 @@
 <template>
   <v-app>
-    <div>
-      <HelloWorld />
-    </div>
-    <div class="nonema">value: {{ model }}</div>
-    <input type="text" v-model="name" />
-    <v-btn @click="add" depressed small>add</v-btn>
+    <v-navigation-drawer
+      v-model="primaryDrawer.model"
+      :clipped="primaryDrawer.clipped"
+      :floating="primaryDrawer.floating"
+      :mini-variant="primaryDrawer.mini"
+      :permanent="primaryDrawer.type === 'permanent'"
+      :temporary="primaryDrawer.type === 'temporary'"
+      app
+      overflow
+    ></v-navigation-drawer>
 
-    <ul>
-      <li v-for="todo in todos" :key="todo">
-        <p>{{ todo }}</p>
-        <input type="text" v-model="tmp" />
-        <v-btn @click="change(todo)" depressed small>change</v-btn>
-      </li>
-    </ul>
+    <v-app-bar :clipped-left="primaryDrawer.clipped" app>
+      <v-app-bar-nav-icon
+        v-if="primaryDrawer.type !== 'permanent'"
+        @click.stop="primaryDrawer.model = !primaryDrawer.model"
+      ></v-app-bar-nav-icon>
+      <v-toolbar-title>Vuetify</v-toolbar-title>
+    </v-app-bar>
+
+    <v-main>
+      <router-view></router-view>
+      <v-container fluid> </v-container>
+    </v-main>
+
+    <v-footer :inset="footer.inset" app>
+      <span class="px-4">&copy; {{ new Date().getFullYear() }}</span>
+    </v-footer>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld";
+  import { createNamespacedHelpers } from 'vuex';
+  const { mapGetters: mapGettersSettingsApp } = createNamespacedHelpers(
+    'settingsApp'
+  );
 
-export default {
-  name: "App",
-  components: {
-    HelloWorld
-  },
-  data: () => ({
-    name: "1",
-    tmp: "",
-    todos: []
-  }),
-  methods: {
-    add() {
-      const { name, todos } = this;
-      todos.push(name);
-      this.name = "";
+  export default {
+    name: 'App',
+    data: () => ({
+      footer: {
+        inset: false,
+      },
+    }),
+    computed: {
+      ...mapGettersSettingsApp({
+        primaryDrawer: 'getPrimaryDrawer',
+      }),
     },
-    change(val) {
-      const { todos, tmp } = this;
-      const newTodos = todos.filter(item => item !== val);
-      newTodos.push(tmp);
-      this.todos = newTodos;
-      this.tmp = "";
-    }
-  }
-};
+  };
 </script>
 
-<style scoped>
-.nonema {
-  border: 1px solid red;
-}
-</style>
+<style scoped></style>
